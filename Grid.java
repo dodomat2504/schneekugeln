@@ -38,6 +38,7 @@ public class Grid extends JPanel {
             for (int i = 1; i <= r; i++) {
                 int yRes = yOffset + (i - 1) * (2 * yOffset + pictureWidth);
                 for (int j = 1; j <= c; j++) {
+                    if (k + 1 > imgs.length) break;
                     int xRes = xOffset + (j - 1) * (2 * xOffset + pictureWidth);
                     g.drawImage(imgs[k], xRes, yRes, null);
                     k++;

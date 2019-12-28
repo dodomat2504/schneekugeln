@@ -9,6 +9,7 @@ class GUI extends JFrame {
     // Variables
     private static final long serialVersionUID = 1L;
     private JButton button1 = new JButton();
+    private JButton button2 = new JButton();
     private static int px_width;
     private static int px_height;
     private Grid g;
@@ -28,17 +29,28 @@ class GUI extends JFrame {
         this.setBounds(200, 100, px_width, px_height);
         button1.setBounds(px_width - 300, px_height - 100, 250, 40);
         button1.setVisible(true);
-        button1.setText("Bilder laden und anzoigen");
+        button1.setText("Zeig mir meine Bilder! :D");
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 btnClicked();
             }
         });
-
         add(button1);
+
+        button2.setBounds(px_width - 300, px_height - 160, 250, 40);
+        button2.setVisible(true);
+        button2.setText("Hinzufügen");
+        button2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnInsertClicked();
+            }
+        });
+        add(button2);
+
         this.setTitle("Schneekugelbibliothek :)");
-        g = new Grid(3, 2, 700, 4, 4);
+        g = new Grid(3, 3, 700, 50, 50);
         g.setBounds(10, 10, g.getWidth(), g.getHeight());
         add(g);
 
@@ -55,6 +67,9 @@ class GUI extends JFrame {
     public void btnClicked() {
         g.setImageList(imglist);
         g.repaint();
+    }
+
+    public void btnInsertClicked() {
         new Insert();
     }
 
