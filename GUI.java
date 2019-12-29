@@ -40,7 +40,7 @@ class GUI extends JFrame {
 
         button2.setBounds(px_width - 300, px_height - 160, 250, 40);
         button2.setVisible(true);
-        button2.setText("Hinzufügen");
+        button2.setText("Hinzufuegen");
         button2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - Insert",
+            "request": "launch",
+            "mainClass": "Insert",
+            "projectName": "schneekugeln_c7724646"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - Speicher",
             "request": "launch",
             "mainClass": "Speicher",
