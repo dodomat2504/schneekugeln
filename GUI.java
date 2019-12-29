@@ -1,6 +1,7 @@
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -54,7 +55,11 @@ class GUI extends JFrame {
         g.setBounds(10, 10, g.getWidth(), g.getHeight());
         add(g);
 
-        Speicher.load();
+        try {
+            Speicher.load();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
         Image[] oldList = Speicher.getPicturesUnscaled();
         imglist = new Image[oldList.length];
 
