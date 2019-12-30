@@ -131,10 +131,6 @@ public class Insert extends JFrame {
         add(addBtn);
     }
 
-    public static void main(String[] args) { // am Ende wieder entfernen!
-        new Insert();
-    }
-
     protected void textUeberpruefen() {
         String al = "abcdefghijklmnopqrstuvwxyzäöü,.-#+´ß^°!§$%&/()=?`*'_:;<>/*-+";
         String s = ID.getText();
@@ -173,7 +169,35 @@ public class Insert extends JFrame {
     }
 
     protected void btnAddClicked() {
-
+        if (ID.getText().equalsIgnoreCase("") || ID.getText().equalsIgnoreCase(" ")) {
+            JOptionPane.showMessageDialog(addBtn, "ID muss angegeben werden!", "Wichtiger Hinweis!", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (ortField.getText().equalsIgnoreCase("") || ortField.getText().equalsIgnoreCase(" ")) {
+            JOptionPane.showMessageDialog(addBtn, "Ort muss angegeben werden!", "Wichtiger Hinweis!", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (fileChooser.getSelectedFile() == null) {
+            JOptionPane.showMessageDialog(addBtn, "Du musst ein Bild angeben!", "Wichtiger Hinweis!", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (geschenk.isSelected() && (schenker.getText().equalsIgnoreCase("") || schenker.getText().equalsIgnoreCase(" "))) {
+            JOptionPane.showMessageDialog(addBtn, "Von wem hast du es bekommen? Oder ist es doch kein Geschenk?", "Wichtiger Hinweis!", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (notizen.getText().equalsIgnoreCase("") || notizen.getText().equalsIgnoreCase(" ")) {
+            notizen.setText(" ");
+        }
+        String data = "";
+        data += ID.getText() + "___";
+        data += fileChooser.getSelectedFile().getPath() + "___";
+        data += ortField.getText() + "___";
+        if (geschenk.isSelected()) data += schenker.getText() + "___";
+        data += notizen.getText();
+        boolean result = Speicher.addData(data);
+        if (!result) {
+            System.out.println("Es gab ein Problem beim Speichern!");
+        }
     }
     
 }
