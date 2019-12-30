@@ -38,8 +38,14 @@ class Speicher {
         }
         FileReader fr = new FileReader(db);
         BufferedReader br = new BufferedReader(fr);
-        String[] data_arr = br.readLine().split(";");
+        String readline = "";
+        String[] data_arr;
+        if ((readline = br.readLine()) == null) {
+            br.close();
+            return;
+        }
         br.close();
+        data_arr = readline.split(";");
         for (int i = 0; i < data_arr.length; i++) {
             String[] sub_arr = data_arr[i].split("___");
             int ID = Integer.parseInt(sub_arr[0]);
@@ -95,6 +101,30 @@ class Speicher {
             if (i != eintraege) data += ";";
             i++;
         }
+        return data;
+    }
+
+    public static Object[] getIdList() {
+        if (bilder.keySet().size() == 0) return null;
+        Object[] list = new Object[bilder.size()];
+        int i = 0;
+        for (int key : bilder.keySet()) {
+            list[i] = key;
+            i++;
+        }
+        return list;
+    }
+
+    public static String getData(int ID) {
+        if (!bilder.containsKey(ID)) return null;
+        String data = "";
+        data += ID + "___";
+        data += bilder.get(ID) + "___";
+        data += ort.get(ID) + "___";
+        if (schenker.containsKey(ID)) {
+            data += schenker.get(ID) + "___";
+        }
+        data += notizen.get(ID);
         return data;
     }
 

@@ -3,8 +3,6 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -18,7 +16,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class Insert extends JFrame {
+public class Edit extends JFrame {
+
     private static final long serialVersionUID = 1L;
     private JTextField ortField = new JTextField();
     private JLabel ortLabel = new JLabel();
@@ -27,7 +26,8 @@ public class Insert extends JFrame {
     private JLabel notizenLabel = new JLabel();
     private JCheckBox geschenk = new JCheckBox();
     private JTextField schenker = new JTextField();
-    private JButton addBtn = new JButton();
+    private JButton saveBtn = new JButton();
+    private JButton deleteBtn = new JButton();
     private JButton addBildBtn = new JButton();
     private JTextField ID = new JTextField();
     private JFileChooser fileChooser = new JFileChooser();
@@ -36,10 +36,10 @@ public class Insert extends JFrame {
     private JLabel IDLabel = new JLabel();
     private Grid grid;
 
-    public Insert() {
+    public Edit() {
         setBounds(100, 100, 500, 500);
         setBackground(Color.white);
-        setTitle("Hinzufuegen");
+        setTitle("Bearbeiten");
         setVisible(true);
         setLayout(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -57,15 +57,7 @@ public class Insert extends JFrame {
 
         ID.setBounds(ortField.getX(), ortField.getY() - 65, 50, 40);
         ID.setFont(writeFont);
-        ID.addKeyListener(new KeyListener() {
-            @Override
-            public void keyPressed(KeyEvent e) {textUeberpruefen();}
-            @Override
-            public void keyReleased(KeyEvent e) {}
-
-            @Override
-            public void keyTyped(KeyEvent e) {}
-        });
+        ID.setEditable(false);
         IDLabel.setBounds(ID.getX(), ID.getY() - 25, 50, 30);
         IDLabel.setText("ID:");
 
@@ -83,13 +75,22 @@ public class Insert extends JFrame {
         BildBtnLabel.setBounds(addBildBtn.getX(), addBildBtn.getY() - 20, addBildBtn.getWidth() * 2, 20);
         BildBtnLabel.setText("Wie sehe ich aus?");
 
-        addBtn.setBounds(getWidth() - 200, getHeight() - 100, 180, 55);
-        addBtn.setVisible(true);
-        addBtn.setText("Hinzufuegen");
-        addBtn.addActionListener(new ActionListener() {
+        saveBtn.setBounds(getWidth() - 200, getHeight() - 100, 180, 55);
+        saveBtn.setVisible(true);
+        saveBtn.setText("Speichern");
+        saveBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                btnAddClicked();
+                btnSpeichernClicked();
+            }
+        });
+        deleteBtn.setBounds(saveBtn.getX() - 200, getHeight() - 100, 180, 55);
+        deleteBtn.setVisible(true);
+        deleteBtn.setText("Loeschen");
+        deleteBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnDeleteClicked();
             }
         });
 
@@ -128,23 +129,10 @@ public class Insert extends JFrame {
         add(notizen);
         add(notizenLabel);
         add(grid);
-        add(addBtn);
-    }
+        add(saveBtn);
+        add(deleteBtn);
 
-    protected void textUeberpruefen() {
-        String al = "abcdefghijklmnopqrstuvwxyzäöü,.-#+´ß^°!§$%&/()=?`*'_:;<>/*-+";
-        String s = ID.getText();
-        boolean ok = true;
-        for (int i = 0; i < al.length(); i++) {
-            if (s.contains(al.charAt(i) + "") || s.contains((al.charAt(i) + "").toUpperCase())) {
-                ok = false;
-                break;
-            }
-        }
-        if (!ok) {
-            ID.setText("");
-            JOptionPane.showMessageDialog(ID, "Nur Zahlen! Ansonsten explodiert das Programm :O", "Wichtiger Hinweis!", JOptionPane.WARNING_MESSAGE);
-        }
+        updateFields();
     }
 
     protected void geschenkClicked() {
@@ -152,8 +140,40 @@ public class Insert extends JFrame {
         schenkerLabel.setVisible(geschenk.isSelected());
     }
 
+    private void updateFields() {
+        if (Speicher.getIdList() == null) {
+            this.dispose();
+            JOptionPane.showMessageDialog(null, "Es sind aktuell noch keine Schneekugeln hinzugefuegt worden.", "Hinweis", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        Object input = JOptionPane.showInputDialog(null, "Waehle die ID der Schneekugel aus, die du bearbeiten moechtest.", "Bearbeiten", JOptionPane.INFORMATION_MESSAGE, null, Speicher.getIdList(), Speicher.getIdList()[0]);
+        try {
+            int ID = Integer.parseInt(input.toString());
+            String[] data = Speicher.getData(ID).split("___");
+            String bild_path = data[1];
+            String ort = data[2];
+            String notizen = data[data.length - 1];
+            String schenker = "";
+            if (data.length == 5) schenker = data[3];
+            fileChooser.setCurrentDirectory(new File(bild_path).getParentFile());
+            fileChooser.setSelectedFile(new File(bild_path));
+            Image[] imglist = {ImageIO.read(new File(bild_path)).getScaledInstance(grid.getPictureWidth(), grid.getPictureWidth(), 4)};
+            grid.setImageList(imglist);
+            grid.repaint();
+            this.ID.setText(ID + "");
+            this.ortField.setText(ort);
+            this.notizen.setText(notizen);
+            if (!schenker.equalsIgnoreCase("")) {
+                geschenk.setSelected(true);
+                geschenkClicked();
+                this.schenker.setText(schenker);
+            }
+        } catch (NumberFormatException | IOException | NullPointerException ex) {
+            updateFields();
+        }
+    }
+
     protected void btnBildHinzufuegenClicked() {
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
         int result = fileChooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
             File auswahl = fileChooser.getSelectedFile();
@@ -168,24 +188,20 @@ public class Insert extends JFrame {
         }
     }
 
-    protected void btnAddClicked() {
-        if (ID.getText().equalsIgnoreCase("") || ID.getText().equalsIgnoreCase(" ")) {
-            JOptionPane.showMessageDialog(addBtn, "ID muss angegeben werden!", "Wichtiger Hinweis!", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+    protected void btnSpeichernClicked() {
         if (ortField.getText().equalsIgnoreCase("") || ortField.getText().equalsIgnoreCase(" ")) {
-            JOptionPane.showMessageDialog(addBtn, "Ort muss angegeben werden!", "Wichtiger Hinweis!", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(saveBtn, "Ort muss angegeben werden!", "Wichtiger Hinweis!", JOptionPane.WARNING_MESSAGE);
             return;
         }
         if (fileChooser.getSelectedFile() == null) {
-            JOptionPane.showMessageDialog(addBtn, "Du musst ein Bild angeben!", "Wichtiger Hinweis!", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(saveBtn, "Du musst ein Bild angeben!", "Wichtiger Hinweis!", JOptionPane.WARNING_MESSAGE);
             return;
         }
         if (geschenk.isSelected() && (schenker.getText().equalsIgnoreCase("") || schenker.getText().equalsIgnoreCase(" "))) {
-            JOptionPane.showMessageDialog(addBtn, "Von wem hast du es bekommen? Oder ist es doch kein Geschenk?", "Wichtiger Hinweis!", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(saveBtn, "Von wem hast du es bekommen? Oder ist es doch kein Geschenk?", "Wichtiger Hinweis!", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (notizen.getText().equalsIgnoreCase("") || notizen.getText().equalsIgnoreCase(" ")) {
+        if (notizen.getText().equalsIgnoreCase("")) {
             notizen.setText(" ");
         }
         String data = "";
@@ -194,13 +210,20 @@ public class Insert extends JFrame {
         data += ortField.getText() + "___";
         if (geschenk.isSelected()) data += schenker.getText() + "___";
         data += notizen.getText();
-        boolean result = Speicher.addData(data);
+        boolean result = Speicher.editData(data);
         if (!result) {
-            if (Speicher.getData(Integer.parseInt(ID.getText())) != null) JOptionPane.showMessageDialog(addBtn, "Diese ID ist schon vergeben!", "Hinweis", JOptionPane.ERROR_MESSAGE);
             System.out.println("Es gab ein Problem beim Speichern!");
         } else {
             this.dispose();
         }
     }
-    
+
+    protected void btnDeleteClicked() {
+        int result = JOptionPane.showConfirmDialog(deleteBtn, "Moechtest du die Schneekugel wirklich loeschen?", "Loeschen", JOptionPane.YES_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            Speicher.removeData(Integer.parseInt(ID.getText()));
+            this.dispose();
+        }
+    }
+
 }

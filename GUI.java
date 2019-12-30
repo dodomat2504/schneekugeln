@@ -8,15 +8,16 @@ import javax.swing.JFrame;
 class GUI extends JFrame {
     // Variables
     private static final long serialVersionUID = 1L;
-    private JButton button1 = new JButton();
-    private JButton button2 = new JButton();
+    private JButton debugButton = new JButton();
+    private JButton addButton = new JButton();
+    private JButton editButton = new JButton();
     private static int px_width;
     private static int px_height;
 
     // Methods
     public static void main(String[] args) {
-        px_width = 1200;
-        px_height = 900;
+        px_width = 300;
+        px_height = 500;
         new GUI();
     }
 
@@ -27,28 +28,39 @@ class GUI extends JFrame {
         this.setBounds(200, 100, px_width, px_height);
         this.setTitle("Schneekugelbibliothek :)");
 
-        button1.setBounds(px_width - 300, px_height - 100, 250, 40);
-        button1.setVisible(true);
-        button1.setText("DEBUG-Ausgabe: Data-String");
-        button1.addActionListener(new ActionListener() {
+        debugButton.setBounds(20, 20, 250, 40);
+        debugButton.setVisible(true);
+        debugButton.setText("DEBUG-Ausgabe: Data-String");
+        debugButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 btnClicked();
             }
         });
 
-        button2.setBounds(px_width - 300, px_height - 160, 250, 40);
-        button2.setVisible(true);
-        button2.setText("Hinzufuegen");
-        button2.addActionListener(new ActionListener() {
+        addButton.setBounds(debugButton.getX(), debugButton.getY() + 60, 250, 40);
+        addButton.setVisible(true);
+        addButton.setText("Hinzufuegen");
+        addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 btnInsertClicked();
             }
         });
 
-        add(button1);
-        add(button2);
+        editButton.setBounds(addButton.getX(), addButton.getY() + 60, 250, 40);
+        editButton.setVisible(true);
+        editButton.setText("Bearbeiten");
+        editButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnEditClicked();
+            }
+        });
+
+        add(debugButton);
+        add(addButton);
+        add(editButton);
         try {
             Speicher.load();
         } catch (IOException e1) {
@@ -56,12 +68,16 @@ class GUI extends JFrame {
         }
     }
 
-    public void btnClicked() {
+    protected void btnClicked() {
         System.out.println(Speicher.getData());
     }
 
-    public void btnInsertClicked() {
+    protected void btnInsertClicked() {
         new Insert();
+    }
+
+    protected void btnEditClicked() {
+        new Edit();
     }
 
 }
