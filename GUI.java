@@ -11,6 +11,7 @@ class GUI extends JFrame {
     private JButton debugButton = new JButton();
     private JButton addButton = new JButton();
     private JButton editButton = new JButton();
+    private JButton galerieButton = new JButton();
     private static int px_width;
     private static int px_height;
 
@@ -58,9 +59,20 @@ class GUI extends JFrame {
             }
         });
 
+        galerieButton.setBounds(editButton.getX(), editButton.getY() + 60, 250, 40);
+        galerieButton.setVisible(true);
+        galerieButton.setText("Galerie");
+        galerieButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnGalerieClicked();
+            }
+        });
+
         add(debugButton);
         add(addButton);
         add(editButton);
+        add(galerieButton);
         try {
             Speicher.load();
         } catch (IOException e1) {
@@ -78,6 +90,10 @@ class GUI extends JFrame {
 
     protected void btnEditClicked() {
         new Edit();
+    }
+
+    protected void btnGalerieClicked() {
+        new Galerie(1);
     }
 
 }

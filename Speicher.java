@@ -1,4 +1,3 @@
-//import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,23 +13,6 @@ class Speicher {
     private static HashMap<Integer, String> notizen = new HashMap<Integer, String>();
 
     public static void load() throws IOException {
-        /*
-        File folder = new File("bilder");
-        if (!folder.exists())
-            folder.mkdir();
-        count = folder.listFiles().length;
-        pictures_Unscaled = new Image[count];
-        int k = 0;
-        for (File f : folder.listFiles()) {
-            try {
-                pictures_Unscaled[k] = ImageIO.read(f);
-            } catch (IOException e) {
-                System.out.println("Dieses Bild konnte nicht geladen werden. Pfad: '" + f.getPath() + "'");
-            }
-            k++;
-        }
-        */
-
         File db = new File("db.txt");
         if (!db.exists()) {
             db.createNewFile();
@@ -126,6 +108,10 @@ class Speicher {
         }
         data += notizen.get(ID);
         return data;
+    }
+
+    public static HashMap<Integer, String> getBildPaths() {
+        return bilder;
     }
 
     public static boolean addData(String data) {

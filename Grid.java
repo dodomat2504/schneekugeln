@@ -11,6 +11,7 @@ public class Grid extends JPanel {
     private int xOffset;
     private int yOffset;
     private Image[] imgs;
+    private Color bgColor;
 
     public Grid(int columns, int rows, int max_width) {
         this.r = rows;
@@ -18,6 +19,7 @@ public class Grid extends JPanel {
         setSize(max_width, max_width);
         this.xOffset = 1;
         this.yOffset = 1;
+        this.bgColor = Color.white;
     }
 
     public Grid(int columns, int rows, int max_width, int xOffset, int yOffset) {
@@ -26,14 +28,15 @@ public class Grid extends JPanel {
         setSize(max_width, max_width);
         this.xOffset = xOffset;
         this.yOffset = yOffset;
+        this.bgColor = Color.white;
     }
 
     @Override
-    public void paint(Graphics g) {
-        super.paint(g);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         if (imgs != null && imgs.length > 0) {
-            setBackground(Color.white);
-            int pictureWidth = ((int) Math.floor(getWidth() / c)) - xOffset * (c - 1);
+            setBackground(this.bgColor);
+            int pictureWidth = getPictureWidth();
             int k = 0;
             for (int i = 1; i <= r; i++) {
                 int yRes = yOffset + (i - 1) * (2 * yOffset + pictureWidth);
@@ -61,7 +64,11 @@ public class Grid extends JPanel {
     }
 
     public int getPictureWidth() {
-        return ((int) Math.floor(getWidth() / c)) - xOffset * (c - 1);
+        return ((int) Math.floor(getWidth() / c)) - xOffset * 2;
+    }
+
+    public void setBgColor(Color c) {
+        this.bgColor = c;
     }
 
 }
