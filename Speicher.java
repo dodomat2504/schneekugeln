@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 
 class Speicher {
@@ -16,6 +19,8 @@ class Speicher {
         File db = new File("db.txt");
         if (!db.exists()) {
             db.createNewFile();
+            Path path = FileSystems.getDefault().getPath(db.getPath());
+            Files.setAttribute(path, "dos:hidden", true);
             return;
         }
         FileReader fr = new FileReader(db);
