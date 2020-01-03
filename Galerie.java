@@ -118,14 +118,12 @@ public class Galerie extends JFrame {
                     public void mouseEntered(MouseEvent e) {
                         ta.setText("ID: " + ID + "\nOrt: " + ort + schenker + "Notiz: " + notiz);
                         ta.setOpaque(true);
-                        System.out.println("Mouse entered");
                     }
 
                     @Override
                     public void mouseExited(MouseEvent e) {
                         ta.setText("");
                         ta.setOpaque(false);
-                        System.out.println("Mouse exited");
                     }
                 });
 

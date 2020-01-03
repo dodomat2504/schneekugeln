@@ -8,7 +8,6 @@ import javax.swing.JFrame;
 class GUI extends JFrame {
     // Variables
     private static final long serialVersionUID = 1L;
-    private JButton debugButton = new JButton();
     private JButton addButton = new JButton();
     private JButton editButton = new JButton();
     private JButton galerieButton = new JButton();
@@ -18,7 +17,7 @@ class GUI extends JFrame {
     // Methods
     public static void main(String[] args) {
         px_width = 300;
-        px_height = 500;
+        px_height = 250;
         new GUI();
     }
 
@@ -29,17 +28,7 @@ class GUI extends JFrame {
         this.setBounds(200, 100, px_width, px_height);
         this.setTitle("Schneekugelbibliothek :)");
 
-        debugButton.setBounds(20, 20, 250, 40);
-        debugButton.setVisible(true);
-        debugButton.setText("DEBUG-Ausgabe: Data-String");
-        debugButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                btnClicked();
-            }
-        });
-
-        addButton.setBounds(debugButton.getX(), debugButton.getY() + 60, 250, 40);
+        addButton.setBounds(20, 20, 250, 40);
         addButton.setVisible(true);
         addButton.setText("Hinzufuegen");
         addButton.addActionListener(new ActionListener() {
@@ -69,7 +58,6 @@ class GUI extends JFrame {
             }
         });
 
-        add(debugButton);
         add(addButton);
         add(editButton);
         add(galerieButton);
@@ -78,10 +66,6 @@ class GUI extends JFrame {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-    }
-
-    protected void btnClicked() {
-        System.out.println(Speicher.getData());
     }
 
     protected void btnInsertClicked() {
