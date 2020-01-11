@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+/*
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+*/
 import java.util.HashMap;
 
 class Speicher {
@@ -19,8 +21,10 @@ class Speicher {
         File db = new File("db.txt");
         if (!db.exists()) {
             db.createNewFile();
+            /*
             Path path = FileSystems.getDefault().getPath(db.getPath());
             Files.setAttribute(path, "dos:hidden", true);
+            */
             return;
         }
         FileReader fr = new FileReader(db);
@@ -51,6 +55,10 @@ class Speicher {
         File db = new File("db.txt");
         if (db.exists()) db.delete();
         db.createNewFile();
+        /*
+        Path path = FileSystems.getDefault().getPath(db.getPath());
+        Files.setAttribute(path, "dos:hidden", true);
+        */
         FileWriter fw = new FileWriter(db);
         BufferedWriter bw = new BufferedWriter(fw);
         int i = 1;
@@ -93,7 +101,7 @@ class Speicher {
 
     public static Object[] getIdList() {
         if (bilder.keySet().size() == 0) return null;
-        Object[] list = new Object[bilder.size()];
+        Object[] list = new Object[bilder.keySet().size()];
         int i = 0;
         for (int key : bilder.keySet()) {
             list[i] = key;
@@ -131,12 +139,58 @@ class Speicher {
             schenker.put(ID, sub_arr[3]);
             notizen.put(ID, sub_arr[4]);
         }
+        HashMap<Integer, Integer> old_to_sorted_ID = new HashMap<Integer, Integer>();
+        HashMap<Integer, String> bilder_new = new HashMap<Integer, String>();
+        int[] old_order = new int[bilder.size()], new_order = new int[bilder.size()];
+        int i = 0;
+        for (int IID : bilder.keySet()) {
+            old_order[i] = IID;
+            i++;
+        }
+        long time = System.nanoTime();
+        new_order = sort(old_order);
+        System.out.println(old_order);
+        System.out.println(sort(old_order));
+        System.out.println("This took " + (System.nanoTime() - time) + " Nanoseconds.");
+        for (i = 0; i < new_order.length; i++) {
+            old_to_sorted_ID.put(old_order[i], new_order[i]);
+        }
+        for (int key : old_to_sorted_ID.keySet()) {
+            bilder_new.put(old_to_sorted_ID.get(key), bilder.get(key));
+        }
+        //System.out.println(bilder.toString());
+        //System.out.println(old_to_sorted_ID.toString());
+        bilder = bilder_new;
         try {
             save();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return true;
+    }
+
+    private static boolean isSorted(int[] array) {
+        for (int i = 1; i < array.length; i++) {
+            if (array[i-1] > array[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static int[] sort(int[] arr) {
+        int[] array = arr;
+        while (!isSorted(array)) {
+            for (int i = 1; i < array.length; i++) {
+                if (array[i-1] > array[i]) {
+                    //System.out.println("Sorting...");
+                    int zw = array[i-1];
+                    array[i-1] = array[i];
+                    array[i] = zw;
+                }
+            }
+        }
+        return array;
     }
 
     public static boolean removeData(int ID) {

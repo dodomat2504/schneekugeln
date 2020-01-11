@@ -62,7 +62,7 @@ public class Edit extends JFrame {
         IDLabel.setText("ID:");
 
         fileChooser.setFileFilter(new FileNameExtensionFilter("Bilder", "png", "jpg", "jpeg"));
-        fileChooser.setApproveButtonText("Auswählen");
+        fileChooser.setApproveButtonText("Auswaehlen");
 
         addBildBtn.setBounds(ortField.getX(), ortField.getY() + 65, 60, 30);
         addBildBtn.setText("Bild");

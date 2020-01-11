@@ -35,6 +35,7 @@ public class Insert extends JFrame {
     private JTextField notizen = new JTextField();
     private JLabel IDLabel = new JLabel();
     private Grid grid;
+    private static String current_path;
 
     public Insert() {
         setBounds(100, 100, 500, 500);
@@ -45,6 +46,7 @@ public class Insert extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         writeFont = new Font("Arial", 0, 18);
         grid = new Grid(1, 1, 300, 0, 0);
+        if (current_path == null || current_path.equals("")) current_path = System.getProperty("user.dir");
 
         ortField.setBounds(40, 100, 150, 40);
         ortField.setFont(writeFont);
@@ -70,7 +72,7 @@ public class Insert extends JFrame {
         IDLabel.setText("ID:");
 
         fileChooser.setFileFilter(new FileNameExtensionFilter("Bilder", "png", "jpg", "jpeg"));
-        fileChooser.setApproveButtonText("Auswählen");
+        fileChooser.setApproveButtonText("Auswaehlen");
 
         addBildBtn.setBounds(ortField.getX(), ortField.getY() + 65, 60, 30);
         addBildBtn.setText("Bild");
@@ -153,9 +155,10 @@ public class Insert extends JFrame {
     }
 
     protected void btnBildHinzufuegenClicked() {
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setCurrentDirectory(new File(current_path));
         int result = fileChooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
+            current_path = fileChooser.getCurrentDirectory().getPath();
             File auswahl = fileChooser.getSelectedFile();
             try {
                 Image[] imglist = {ImageIO.read(auswahl).getScaledInstance(grid.getPictureWidth(), grid.getPictureWidth(), 4)};

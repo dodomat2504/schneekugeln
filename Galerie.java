@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -65,11 +66,11 @@ public class Galerie extends JFrame {
         g = new Grid(c, r, sidelength, xOffset, yOffset);
         g.setBounds(0, 0, sidelength, sidelength);
         Image[] imglist = new Image[pic_count_this_site];
-        int i = 0;
-        int index = 0;
-        for (int ID : Speicher.getBildPaths().keySet()) {
+        int i = 0, index = 0;
+        HashMap<Integer, String> bilder = Speicher.getBildPaths();
+        for (int ID : bilder.keySet()) {
             if (i >= (site - 1) * 9 && i <= (site * 9 - 1)) {
-                imglist[index] = Bild.getScaledImage(Speicher.getBildPaths().get(ID), g.getPictureWidth());
+                imglist[index] = Bild.getScaledImage(bilder.get(ID), g.getPictureWidth());
                 index++;
             }
             i++;
