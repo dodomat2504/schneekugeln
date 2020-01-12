@@ -1,6 +1,13 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -117,6 +124,54 @@ public class Edit extends JFrame {
         grid.setBounds(200, 0, 300, 300);
         grid.setBackground(Color.white);
 
+        new DropTarget(grid, new DropTargetListener()
+        {
+            @Override
+            public void drop(DropTargetDropEvent dtde)
+            {
+            try
+            {
+                Transferable tr = dtde.getTransferable();
+                DataFlavor[] flavors = tr.getTransferDataFlavors();
+                for (int i = 0; i < flavors.length; i++) {
+                    if (flavors[i].isFlavorJavaFileListType()) {
+                        dtde.acceptDrop(dtde.getDropAction());
+                        @SuppressWarnings("unchecked")
+                        java.util.List<File> files = (java.util.List<File>) tr.getTransferData(flavors[i]);
+                        for (int k = 0; k < files.size(); k++) {
+                            dragNdrop(files.get(k));
+                        }
+                        dtde.dropComplete(true);
+                    }
+                }
+                return;
+            }
+            catch (Throwable t)
+            {
+                t.printStackTrace();
+            }
+            dtde.rejectDrop();
+            
+            }
+    
+            @Override
+            public void dragEnter(DropTargetDragEvent dtde)
+            {}
+    
+            @Override
+            public void dragOver(DropTargetDragEvent dtde)
+            {}
+    
+            @Override
+            public void dropActionChanged(DropTargetDragEvent dtde)
+            {}
+    
+            @Override
+            public void dragExit(DropTargetEvent dte)
+            {}
+    
+        });
+
         add(ortLabel);
         add(ID);
         add(IDLabel);
@@ -138,6 +193,18 @@ public class Edit extends JFrame {
     protected void geschenkClicked() {
         schenker.setVisible(geschenk.isSelected());
         schenkerLabel.setVisible(geschenk.isSelected());
+    }
+
+    protected void dragNdrop(File f) {
+        fileChooser.setSelectedFile(f);
+            try {
+                Image[] imglist = {ImageIO.read(f).getScaledInstance(grid.getPictureWidth(), grid.getPictureWidth(), 4)};
+                grid.setImageList(imglist);
+                grid.repaint();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Fehler beim Bild malen");
+            }
     }
 
     private void updateFields() {

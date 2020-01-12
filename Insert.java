@@ -1,6 +1,13 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -35,6 +42,7 @@ public class Insert extends JFrame {
     private JTextField notizen = new JTextField();
     private JLabel IDLabel = new JLabel();
     private Grid grid;
+    private static String current_path;
 
     public Insert() {
         setBounds(100, 100, 500, 500);
@@ -45,6 +53,7 @@ public class Insert extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         writeFont = new Font("Arial", 0, 18);
         grid = new Grid(1, 1, 300, 0, 0);
+        if (current_path == null || current_path.equals("")) current_path = System.getProperty("user.dir");
 
         ortField.setBounds(40, 100, 150, 40);
         ortField.setFont(writeFont);
@@ -116,6 +125,54 @@ public class Insert extends JFrame {
         grid.setBounds(200, 0, 300, 300);
         grid.setBackground(Color.white);
 
+        new DropTarget(grid, new DropTargetListener()
+        {
+            @Override
+            public void drop(DropTargetDropEvent dtde)
+            {
+            try
+            {
+                Transferable tr = dtde.getTransferable();
+                DataFlavor[] flavors = tr.getTransferDataFlavors();
+                for (int i = 0; i < flavors.length; i++) {
+                    if (flavors[i].isFlavorJavaFileListType()) {
+                        dtde.acceptDrop(dtde.getDropAction());
+                        @SuppressWarnings("unchecked")
+                        java.util.List<File> files = (java.util.List<File>) tr.getTransferData(flavors[i]);
+                        for (int k = 0; k < files.size(); k++) {
+                            dragNdrop(files.get(k));
+                        }
+                        dtde.dropComplete(true);
+                    }
+                }
+                return;
+            }
+            catch (Throwable t)
+            {
+                t.printStackTrace();
+            }
+            dtde.rejectDrop();
+            
+            }
+    
+            @Override
+            public void dragEnter(DropTargetDragEvent dtde)
+            {}
+    
+            @Override
+            public void dragOver(DropTargetDragEvent dtde)
+            {}
+    
+            @Override
+            public void dropActionChanged(DropTargetDragEvent dtde)
+            {}
+    
+            @Override
+            public void dragExit(DropTargetEvent dte)
+            {}
+    
+        });
+
         add(ortLabel);
         add(ID);
         add(IDLabel);
@@ -153,10 +210,11 @@ public class Insert extends JFrame {
     }
 
     protected void btnBildHinzufuegenClicked() {
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setCurrentDirectory(new File(current_path));
         int result = fileChooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
             File auswahl = fileChooser.getSelectedFile();
+            current_path = fileChooser.getCurrentDirectory().getPath();
             try {
                 Image[] imglist = {ImageIO.read(auswahl).getScaledInstance(grid.getPictureWidth(), grid.getPictureWidth(), 4)};
                 grid.setImageList(imglist);
@@ -166,6 +224,19 @@ public class Insert extends JFrame {
                 System.out.println("Fehler beim Bild malen");
             }
         }
+    }
+
+    protected void dragNdrop(File f) {
+        current_path = f.getPath();
+        fileChooser.setSelectedFile(f);
+            try {
+                Image[] imglist = {ImageIO.read(f).getScaledInstance(grid.getPictureWidth(), grid.getPictureWidth(), 4)};
+                grid.setImageList(imglist);
+                grid.repaint();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Fehler beim Bild malen");
+            }
     }
 
     protected void btnAddClicked() {
