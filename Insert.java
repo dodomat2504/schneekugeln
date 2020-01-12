@@ -79,7 +79,7 @@ public class Insert extends JFrame {
         IDLabel.setText("ID:");
 
         fileChooser.setFileFilter(new FileNameExtensionFilter("Bilder", "png", "jpg", "jpeg"));
-        fileChooser.setApproveButtonText("Auswählen");
+        fileChooser.setApproveButtonText("Auswaehlen");
 
         addBildBtn.setBounds(ortField.getX(), ortField.getY() + 65, 60, 30);
         addBildBtn.setText("Bild");
@@ -213,6 +213,7 @@ public class Insert extends JFrame {
         fileChooser.setCurrentDirectory(new File(current_path));
         int result = fileChooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
+            current_path = fileChooser.getCurrentDirectory().getPath();
             File auswahl = fileChooser.getSelectedFile();
             current_path = fileChooser.getCurrentDirectory().getPath();
             try {

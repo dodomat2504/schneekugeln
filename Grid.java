@@ -32,11 +32,11 @@ public class Grid extends JPanel {
     }
 
     @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    public void paint(Graphics g) {
+        super.paint(g);
         if (imgs != null && imgs.length > 0) {
             setBackground(this.bgColor);
-            int pictureWidth = getPictureWidth();
+            final int pictureWidth = getPictureWidth();
             int k = 0;
             for (int i = 1; i <= r; i++) {
                 int yRes = yOffset + (i - 1) * (2 * yOffset + pictureWidth);
