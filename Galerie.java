@@ -1,5 +1,5 @@
 import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,7 +23,7 @@ public class Galerie extends JFrame {
     private Font writeFont;
 
     public Galerie(int site) {
-        final int sidelength = 900;
+        final int sidelength = Toolkit.getDefaultToolkit().getScreenSize().height - 180;
         final int xOffset = 10;
         final int yOffset = 10;
         writeFont = new Font("Arial", 0, 18);

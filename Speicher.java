@@ -94,7 +94,27 @@ class Speicher {
             list[i] = key;
             i++;
         }
-        return list;
+        return sort(list);
+    }
+
+    private static boolean isSorted(Object[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            if (Integer.parseInt(arr[i-1].toString()) > Integer.parseInt(arr[i].toString())) return false;
+        }
+        return true;
+    }
+
+    private static Object[] sort(Object[] arr) {
+        while (!isSorted(arr)){
+            for (int i = 1; i < arr.length; i++) {
+                if (Integer.parseInt(arr[i-1].toString()) > Integer.parseInt(arr[i].toString())) {
+                    Object zw = arr[i];
+                    arr[i] = arr[i-1];
+                    arr[i-1] = zw;
+                }
+            }   
+        }
+        return arr;
     }
 
     public static String getData(int ID) {
